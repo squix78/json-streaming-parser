@@ -40,4 +40,10 @@ implement methods which will be notified in case of certain events in the feed o
  * startArray()
  * startObject()
 
-In your implementation of these methods you will have to write problem specific code to find the proper
+In your implementation of these methods you will have to write problem specific code to find the parts of the document that you are interested in. Please see the example to understand what that means. In the example the ExampleListener implements the event methods declared in the JsonListener interface and prints to the serial console when they are called.
+
+## Credits
+
+First of all I'd like to thank Salsify for making their PHP parser available to the public. You find their repository here: https://github.com/salsify/jsonstreamingparser
+Then I'd like to thank my employer Netcetera (https://github.com/netceteragroup) to let us hackers go twice a year to the CodeCamp and work on software projects like this one.
+And last but not least I'd like to thank my wife that she led me spend three days away from the family hacking in the wonderful mountains of Berne.
