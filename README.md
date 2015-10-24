@@ -25,6 +25,13 @@ it. This reduces the memory consumption a lot, especially if you retrieve huge d
 by a small subset of it. But this efficiency comes at a price: your code will have to do more "magic" than with a
 DOM parser, the business logic becomes part of the parser.
 
+## How to install
+
+Until the library becomes available in the Arduino IDE library manager you'll have to do a bit more work by hand.
+1) Download this library: https://github.com/squix78/json-streaming-parser/archive/master.zip
+2) Rename master.zip to json-streaming-parser.zip
+3) Open the zip file in the Arduino IDE from menu Sketch > Include Library > Add ZIP Library...
+
 ## How to use
 
 This is a streaming parser, which means that you feed a stream of chars into the parser and you take out from that
