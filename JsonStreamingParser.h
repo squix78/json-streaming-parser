@@ -23,6 +23,8 @@ SOFTWARE.
 See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-parser
 */
 
+#pragma once
+
 #include <Arduino.h>
 #include "JsonListener.h"
 
