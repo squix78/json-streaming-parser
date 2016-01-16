@@ -10,7 +10,7 @@
     "name": "Daniel Eichhorn",
     "url": "http://blog.squix.ch"
   },
+  "version": "1.0.1",
   "frameworks": "arduino",
-  "platforms": "*",
-  "version": "1.0.1"
+  "platforms": "*"
 }
