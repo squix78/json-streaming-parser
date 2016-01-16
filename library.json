@@ -1,0 +1,16 @@
+{
+  "name": "Json Streaming Parser",
+  "keywords": "json, streaming",
+  "description": "A very memory efficient library to parse (large) JSON objects on embedded devices",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/squix78/json-streaming-parser.git"
+  },
+  "authors": {
+    "name": "Daniel Eichhorn",
+    "url": "http://blog.squix.ch"
+  },
+  "frameworks": "arduino",
+  "platforms": "*",
+  "version": "1.0.1"
+}
