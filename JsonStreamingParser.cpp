@@ -36,6 +36,7 @@ JsonStreamingParser::JsonStreamingParser() {
 void JsonStreamingParser::setListener(JsonListener* listener) {
   myListener = listener;
 }
+
 void JsonStreamingParser::parse(char c) {
     //System.out.print(c);
     // valid whitespace characters in JSON (from RFC4627 for JSON) include:
@@ -57,7 +58,7 @@ void JsonStreamingParser::parse(char c) {
         //throw new RuntimeException("Unescaped control character encountered: " + c + " at position" + characterCounter);
       } else {
         buffer[bufferPos] = c;
-        bufferPos++;
+        increaseBufferPointer();
       }
       break;
     case STATE_IN_ARRAY:
@@ -125,7 +126,7 @@ void JsonStreamingParser::parse(char c) {
     case STATE_IN_NUMBER:
       if (c >= '0' && c <= '9') {
         buffer[bufferPos] = c;
-        bufferPos++;
+        increaseBufferPointer();
       } else if (c == '.') {
         if (doesCharArrayContain(buffer, bufferPos, '.')) {
           //throw new RuntimeException("Cannot have multiple decimal points in a number. " + characterCounter);
@@ -133,20 +134,20 @@ void JsonStreamingParser::parse(char c) {
           //throw new RuntimeException("Cannot have a decimal point in an exponent." + characterCounter);
         }
         buffer[bufferPos] = c;
-        bufferPos++;
+        increaseBufferPointer();
       } else if (c == 'e' || c == 'E') {
         if (doesCharArrayContain(buffer, bufferPos, 'e')) {
           //throw new RuntimeException("Cannot have multiple exponents in a number. " + characterCounter);
         }
         buffer[bufferPos] = c;
-        bufferPos++;
+        increaseBufferPointer();
       } else if (c == '+' || c == '-') {
         char last = buffer[bufferPos - 1];
         if (!(last == 'e' || last == 'E')) {
           //throw new RuntimeException("Can only have '+' or '-' after the 'e' or 'E' in a number." + characterCounter);
         }
         buffer[bufferPos] = c;
-        bufferPos++;
+        increaseBufferPointer();
       } else {
         endNumber();
         // we have consumed one beyond the end of the number
@@ -155,21 +156,21 @@ void JsonStreamingParser::parse(char c) {
       break;
     case STATE_IN_TRUE:
       buffer[bufferPos] = c;
-      bufferPos++;
+      increaseBufferPointer();
       if (bufferPos == 4) {
         endTrue();
       }
       break;
     case STATE_IN_FALSE:
       buffer[bufferPos] = c;
-      bufferPos++;
+      increaseBufferPointer();
       if (bufferPos == 5) {
         endFalse();
       }
       break;
     case STATE_IN_NULL:
       buffer[bufferPos] = c;
-      bufferPos++;
+      increaseBufferPointer();
       if (bufferPos == 4) {
         endNull();
       }
@@ -195,6 +196,10 @@ void JsonStreamingParser::parse(char c) {
     }
     characterCounter++;
   }
+
+void JsonStreamingParser::increaseBufferPointer() {
+  bufferPos = min(bufferPos + 1, BUFFER_MAX_LENGTH - 1);
+}
 
 void JsonStreamingParser::endString() {
     int popped = stack[stackPos - 1];
@@ -225,15 +230,15 @@ void JsonStreamingParser::startValue(char c) {
     } else if (c == 't') {
       state = STATE_IN_TRUE;
       buffer[bufferPos] = c;
-      bufferPos++;
+      increaseBufferPointer();
     } else if (c == 'f') {
       state = STATE_IN_FALSE;
       buffer[bufferPos] = c;
-      bufferPos++;
+      increaseBufferPointer();
     } else if (c == 'n') {
       state = STATE_IN_NULL;
       buffer[bufferPos] = c;
-      bufferPos++;
+      increaseBufferPointer();
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Unexpected character for value: ".$c);
@@ -282,28 +287,28 @@ void JsonStreamingParser::endObject() {
 void JsonStreamingParser::processEscapeCharacters(char c) {
     if (c == '"') {
       buffer[bufferPos] = '"';
-      bufferPos++;
+      increaseBufferPointer();
     } else if (c == '\\') {
       buffer[bufferPos] = '\\';
-      bufferPos++;
+      increaseBufferPointer();
     } else if (c == '/') {
       buffer[bufferPos] = '/';
-      bufferPos++;
+      increaseBufferPointer();
     } else if (c == 'b') {
       buffer[bufferPos] = 0x08;
-      bufferPos++;
+      increaseBufferPointer();
     } else if (c == 'f') {
       buffer[bufferPos] = '\f';
-      bufferPos++;
+      increaseBufferPointer();
     } else if (c == 'n') {
       buffer[bufferPos] = '\n';
-      bufferPos++;
+      increaseBufferPointer();
     } else if (c == 'r') {
       buffer[bufferPos] = '\r';
-      bufferPos++;
+      increaseBufferPointer();
     } else if (c == 't') {
       buffer[bufferPos] = '\t';
-      bufferPos++;
+      increaseBufferPointer();
     } else if (c == 'u') {
       state = STATE_UNICODE;
     } else {
@@ -480,12 +485,12 @@ void JsonStreamingParser::startString() {
 void JsonStreamingParser::startNumber(char c) {
     state = STATE_IN_NUMBER;
     buffer[bufferPos] = c;
-    bufferPos++;
+    increaseBufferPointer();
   }
 
 void JsonStreamingParser::endUnicodeCharacter(int codepoint) {
     buffer[bufferPos] = convertCodepointToCharacter(codepoint);
-    bufferPos++;
+    increaseBufferPointer();
     unicodeBufferPos = 0;
     unicodeHighSurrogate = -1;
     state = STATE_IN_STRING;
@@ -501,4 +506,3 @@ char JsonStreamingParser::convertCodepointToCharacter(int num) {
     // chr((num>>18)+240).chr(((num>>12)&63)+128).chr(((num>>6)&63)+128).chr((num&63)+128);
     return ' ';
   }
-

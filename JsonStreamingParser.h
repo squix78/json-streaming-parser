@@ -33,7 +33,7 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 #define STATE_IN_ARRAY           1
 #define STATE_IN_OBJECT          2
 #define STATE_END_KEY            3
-#define STATE_AFTER_KEY          4  
+#define STATE_AFTER_KEY          4
 #define STATE_IN_STRING          5
 #define STATE_START_ESCAPE       6
 #define STATE_UNICODE            7
@@ -49,30 +49,33 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 #define STACK_KEY                2
 #define STACK_STRING             3
 
+#define BUFFER_MAX_LENGTH  512
+
 class JsonStreamingParser {
   private:
-  
-  
+
+
     int state;
     int stack[20];
     int stackPos = 0;
     JsonListener* myListener;
-  
+
     boolean doEmitWhitespace = false;
     // fixed length buffer array to prepare for c code
-    char buffer[512];
+    char buffer[BUFFER_MAX_LENGTH];
     int bufferPos = 0;
-  
+
     char unicodeEscapeBuffer[128];
     int unicodeEscapeBufferPos = 0;
-  
+
     char unicodeBuffer[128];
     int unicodeBufferPos = 0;
-    
+
     int characterCounter = 0;
-  
+
     int unicodeHighSurrogate = 0;
-    //private JsonListener listener;
+
+    void increaseBufferPointer();
 
     void endString();
 
@@ -87,7 +90,7 @@ class JsonStreamingParser {
     boolean isDigit(char c);
 
     boolean isHexCharacter(char c);
-    
+
     char convertCodepointToCharacter(int num);
 
     void endUnicodeCharacter(int codepoint);
@@ -123,11 +126,10 @@ class JsonStreamingParser {
     void endObject();
 
 
-    
+
   public:
     JsonStreamingParser();
     void parse(char c);
     void setListener(JsonListener* listener);
-  
-};
 
+};
