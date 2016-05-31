@@ -9,7 +9,7 @@ cache:
         - "~/.platformio"
 
 env:
-    - PLATFORMIO_CI_SRC=examples/JsonStreaminParser
+    - PLATFORMIO_CI_SRC=examples/JsonStreamingParser
 
 
 install:

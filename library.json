@@ -10,12 +10,12 @@
     "name": "Daniel Eichhorn",
     "url": "http://blog.squix.ch"
   },
-  "version": "1.0.1",
+  "version": "1.0.3",
   "frameworks": "arduino",
   "platforms": "*",
   "examples": [
-    "examples/*.ino",
-    "examples/*.cpp",
-    "examples/*.h"    
-  ]  
+    "examples/JsonStreamingParser/*.ino",
+    "examples/JsonStreamingParser/*.cpp",
+    "examples/JsonStreamingParser/*.h"
+  ]
 }
