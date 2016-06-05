@@ -332,7 +332,9 @@ void JsonStreamingParser::processUnicodeCharacter(char c) {
 
     if (unicodeBufferPos == 4) {
       int codepoint = getHexArrayAsDecimal(unicodeBuffer, unicodeBufferPos);
-      if (codepoint >= 0xD800 && codepoint < 0xDC00) {
+      endUnicodeCharacter(codepoint);
+      return;
+      /*if (codepoint >= 0xD800 && codepoint < 0xDC00) {
         unicodeHighSurrogate = codepoint;
         unicodeBufferPos = 0;
         state = STATE_UNICODE_SURROGATE;
@@ -348,9 +350,10 @@ void JsonStreamingParser::processUnicodeCharacter(char c) {
         // throw new ParsingError($this->_line_number,
         // $this->_char_number,
         // "Invalid low surrogate following Unicode high surrogate.");
+        endUnicodeCharacter(codepoint);
       } else {
         endUnicodeCharacter(codepoint);
-      }
+      }*/
     }
   }
 boolean JsonStreamingParser::isHexCharacter(char c) {
@@ -390,6 +393,7 @@ void JsonStreamingParser::endUnicodeSurrogateInterstitial() {
       // "Expected '\\u' following a Unicode high surrogate. Got: " .
       // $unicode_escape);
     }
+    unicodeBufferPos = 0;
     unicodeEscapeBufferPos = 0;
     state = STATE_UNICODE;
   }

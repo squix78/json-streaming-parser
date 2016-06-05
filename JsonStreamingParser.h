@@ -65,10 +65,10 @@ class JsonStreamingParser {
     char buffer[BUFFER_MAX_LENGTH];
     int bufferPos = 0;
 
-    char unicodeEscapeBuffer[128];
+    char unicodeEscapeBuffer[10];
     int unicodeEscapeBufferPos = 0;
 
-    char unicodeBuffer[128];
+    char unicodeBuffer[10];
     int unicodeBufferPos = 0;
 
     int characterCounter = 0;
