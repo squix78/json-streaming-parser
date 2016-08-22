@@ -279,7 +279,7 @@ void JsonStreamingParser::endObject() {
     }
     myListener->endObject();
     state = STATE_AFTER_VALUE;
-    if (stackPos == -1) {
+    if (stackPos == 0) {
       endDocument();
     }
   }
