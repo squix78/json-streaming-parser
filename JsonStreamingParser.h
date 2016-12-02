@@ -131,5 +131,5 @@ class JsonStreamingParser {
     JsonStreamingParser();
     void parse(char c);
     void setListener(JsonListener* listener);
-
+    void reset();
 };
