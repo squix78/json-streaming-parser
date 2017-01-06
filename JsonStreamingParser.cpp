@@ -26,6 +26,10 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 #include "JsonStreamingParser.h"
 
 JsonStreamingParser::JsonStreamingParser() {
+    reset();
+}
+
+void JsonStreamingParser::reset() {
     state = STATE_START_DOCUMENT;
     bufferPos = 0;
     unicodeEscapeBufferPos = 0;
