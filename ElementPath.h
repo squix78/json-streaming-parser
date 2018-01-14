@@ -1,7 +1,5 @@
 /**The MIT License (MIT)
 
-Copyright (c) 2015 by Daniel Eichhorn
-
 Contributors:
     Stefano Chizzolini
 
@@ -22,42 +20,44 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-parser
 */
 
-#pragma once
-
-#include <Arduino.h>
-#include "ElementPath.h"
-
-class JsonListener {
-  private:
-
+/*
+ * Unified element selector.
+ * Represents the handle associated to an element within either
+ * an object (key) or an array (index). 
+ */
+class ElementSelector {
   public:
-
-    virtual void endArray(ElementPath path) = 0;
-
-    virtual void endDocument() = 0;
-
-    virtual void endObject(ElementPath path) = 0;
-
-    virtual void startArray(ElementPath path) = 0;
-  
-    virtual void startDocument() = 0;
-
-    virtual void startObject(ElementPath path) = 0;
-
-    virtual void value(ElementPath path, char* value) = 0;
+    int index;
+    char key[20];
     
-    virtual void value(ElementPath path, bool value) = 0;
-    
-    virtual void value(ElementPath path, float value) = 0;
-    
-    virtual void value(ElementPath path, long value) = 0;
-    
-    virtual void value(ElementPath path) = 0;
-  
-    virtual void whitespace(char c) = 0;
+    bool isObject();
+    void moveNext();
+    void reset();
+    void set(int index);
+    void set(char* key);
+    void toString(char* buffer);
 };
 
+/*
+ * Hierarchical path to currently parsed element.
+ * It eases element filtering, keeping track of the current node
+ * position.  
+ */
+class ElementPath {
+  private:
+    ElementSelector* currentSelector;
+    ElementSelector selectors[20];
+
+  public:
+    int count = 0;
+    
+    ElementSelector* get(int index);
+    int getCurrentIndex();
+    char* getCurrentKey();
+    ElementSelector* peek();
+    void pop();
+    ElementSelector push();
+    void toString(char* buffer);
+};
