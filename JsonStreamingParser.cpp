@@ -72,7 +72,7 @@ void JsonStreamingParser::parse(char c) {
       if (c == ']') {
         endArray();
       } else {
-        path.peek()->moveNext();
+        path.getCurrent()->step();
         startValue(c);
       }
       break;
@@ -214,7 +214,7 @@ void JsonStreamingParser::endString() {
     stackPos--;
     if (popped == STACK_KEY) {
       buffer[bufferPos] = '\0';
-      path.peek()->set(buffer);
+      path.getCurrent()->set(buffer);
       state = STATE_END_KEY;
     } else if (popped == STACK_STRING) {
       buffer[bufferPos] = '\0';

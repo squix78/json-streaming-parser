@@ -26,7 +26,7 @@ void ExampleListener::value(ElementPath path, float value) {
   Serial.print(" float value: ");
   Serial.println(value);
   
-  char* currentKey = path.getCurrentKey();
+  const char* currentKey = path.getKey();
   // Object entry?
   if(currentKey[0] != '\0') {
     if(strcmp(currentKey, "temp") == 0) {
@@ -38,7 +38,7 @@ void ExampleListener::value(ElementPath path, float value) {
   } 
   // Array item.
   else {
-    int currentIndex = path.getCurrentIndex();
+    int currentIndex = path.getIndex();
     if(currentIndex == 0) {
       //TODO: use the value.
     } else if(currentIndex < 5) {

@@ -25,12 +25,16 @@ SOFTWARE.
 #include <Arduino.h>
 #include "ElementPath.h"
 
-bool ElementSelector::isObject() {
-  return index < 0;
+int ElementSelector::getIndex() {
+  return index;
+}
+    
+const char* ElementSelector::getKey() {
+  return key;
 }
 
-void ElementSelector::moveNext() {
-  index++;
+bool ElementSelector::isObject() {
+  return index < 0;
 }
 
 void ElementSelector::reset() {
@@ -48,73 +52,80 @@ void ElementSelector::set(char* key) {
   this->index = -1;
 }
 
-/*
- * Builds the string representation of this node position within 
- * its parent.
- */
+void ElementSelector::step() {
+  index++;
+}
+
 void ElementSelector::toString(char* buffer) {
   if (index >= 0) {
-    sprintf(buffer, "[%d]", index);
+    sprintf(buffer, "%s[%d]", buffer, index);
   } else {
-    strcpy(buffer, key);
+    strcat(buffer, key);
   }
 }
 
 ElementSelector* ElementPath::get(int index) {
-  if(index >= count)
+  if (index >= count
+      || (index < 0 && (index += count - 1) < 0))
     return NULL;
-    
+
   return &selectors[index];
 }
 
-int ElementPath::getCurrentIndex() {
-  return peek()->index;
+int ElementPath::getCount() {
+  return count;
 }
 
-char* ElementPath::getCurrentKey() {
-  return peek()->key;
+ElementSelector* ElementPath::getCurrent() {
+  return current;
 }
 
-ElementSelector* ElementPath::peek() {
-  return currentSelector;
+int ElementPath::getIndex() {
+  return getIndex(current);
+}
+
+int ElementPath::getIndex(int index) {
+  return getIndex(get(index));
+}
+
+int ElementPath::getIndex(ElementSelector* selector) {
+  return selector != NULL ? selector->index : -1;
+}
+
+const char* ElementPath::getKey() {
+  return current != NULL ? current->key : "\0";
+}
+
+const char* ElementPath::getKey(int index) {
+  return getKey(get(index));
+}
+
+const char* ElementPath::getKey(ElementSelector* selector) {
+  return selector != NULL ? selector->key : "\0";
+}
+
+ElementSelector* ElementPath::getParent() {
+  return get(-1);
 }
 
 void ElementPath::pop() {
   if(count > 0) {
-    count--;
-    currentSelector = count > 0 ? &selectors[count - 1] : NULL;
+    current = --count > 0 ? &selectors[count - 1] : NULL;
   }
 }
 
-ElementSelector ElementPath::push() {
-  (currentSelector = &selectors[count++])->reset();
+void ElementPath::push() {
+  (current = &selectors[count++])->reset();
 }
 
-/*
- * Builds the full path corresponding to the current node position.
- *
- * For example, "weather[0].id" corresponds to a 3-level hierarchy:
- * {
- *   "weather" : [
- *     {
- *       "id" : ..., <===== HERE IT IS
- *       ... : ...
- *     },
- *     { ... }
- *   ],
- *   ...
- * }
- */
 void ElementPath::toString(char* buffer) {
   if (count <= 0)
     return;
 
-  char elementBuffer[20];
   for(int index = 0; index < count; index++) {
     if(index > 0 && selectors[index].isObject()) {
       strcat(buffer, "."); 
     }
-    selectors[index].toString(elementBuffer);
-    strcat(buffer, elementBuffer);
+    selectors[index].toString(buffer);
   }
 }
