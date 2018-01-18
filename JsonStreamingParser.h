@@ -59,8 +59,11 @@ class JsonStreamingParser {
 
     int state;
     int stack[20];
-    ElementPath path;
     int stackPos = 0;
+    
+    ElementValue elementValue;
+    ElementPath path;
+    
     JsonListener* myListener;
 
     boolean doEmitWhitespace = false;

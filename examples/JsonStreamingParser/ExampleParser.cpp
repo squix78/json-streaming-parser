@@ -13,18 +13,13 @@ void ExampleListener::startObject(ElementPath path) {
   Serial.println("start object. ");
 }
 
-void ExampleListener::value(ElementPath path, char* value) {
-}
-
-void ExampleListener::value(ElementPath path, long value) {
-}
-
-void ExampleListener::value(ElementPath path, float value) {
+void ExampleListener::value(ElementPath path, ElementValue value) {
   char fullPath[200] = "";
   path.toString(fullPath);
   Serial.print(fullPath);
-  Serial.print(" float value: ");
-  Serial.println(value);
+  Serial.print("': ");
+  char valueBuffer[50] = "";
+  Serial.println(value.toString(valueBuffer));
   
   const char* currentKey = path.getKey();
   // Object entry?
@@ -46,13 +41,6 @@ void ExampleListener::value(ElementPath path, float value) {
     }
     // else ... 
   }
-}
-
-void ExampleListener::value(ElementPath path, bool value) {
-}
-
-void ExampleListener::value(ElementPath path) {
-  Serial.println("value: null");
 }
 
 void ExampleListener::endArray(ElementPath path) {

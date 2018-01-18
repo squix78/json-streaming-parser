@@ -6,7 +6,7 @@ This library is a port of Salsify's PHP based json streaming parser (https://git
 Furthermore, this is a fork by stechio departing from squix78's original library to introduce some key enhancements:
  * explicit element path tracking (ElementPath class): object keys and array indices are managed in a robust, unified manner and exposed in each and every event (users are relieved the pain to jury-rig their own custom event-filtering mechanism)
  * string flattening: adhering to common best practises, cumbersome instances of std::string have been replaced by plain C-style char arrays.
- * strongly-typed values: untypified (string) value event method has been replaced by overloaded, strongly-typed ones corresponding to actual serialization types.
+ * strongly-typed values: untypified (string) value event method has been replaced by a strongly-typed one corresponding to actual serialization types.
 
 ## Why yet another JSON parser?
 
@@ -49,11 +49,7 @@ implement methods which will be notified in case of certain events in the feed o
  * endArray(ElementPath path)
  * startObject(ElementPath path)
  * endObject(ElementPath path)
- * value(ElementPath path, char* value)
- * value(ElementPath path, bool value)
- * value(ElementPath path, float value)
- * value(ElementPath path, long value)    
- * value(ElementPath path)
+ * value(ElementPath path, ElementValue value)
 
 In your implementation of these methods you will have to write problem specific code to find the parts of the document that you are interested in. Please see the example to understand what that means. In the example the ExampleListener implements the event methods declared in the JsonListener interface and prints to the serial console when they are called.
 

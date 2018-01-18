@@ -30,6 +30,7 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 
 #include <Arduino.h>
 #include "ElementPath.h"
+#include "ElementValue.h"
 
 class JsonListener {
   private:
@@ -48,16 +49,7 @@ class JsonListener {
 
     virtual void startObject(ElementPath path) = 0;
 
-    virtual void value(ElementPath path, char* value) = 0;
-    
-    virtual void value(ElementPath path, bool value) = 0;
-    
-    virtual void value(ElementPath path, float value) = 0;
-    
-    virtual void value(ElementPath path, long value) = 0;
-    
-    virtual void value(ElementPath path) = 0;
+    virtual void value(ElementPath path, ElementValue value) = 0;
   
     virtual void whitespace(char c) = 0;
 };
-

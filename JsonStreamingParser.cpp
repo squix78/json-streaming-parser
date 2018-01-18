@@ -218,7 +218,7 @@ void JsonStreamingParser::endString() {
       state = STATE_END_KEY;
     } else if (popped == STACK_STRING) {
       buffer[bufferPos] = '\0';
-      myListener->value(path, buffer);
+      myListener->value(path, elementValue.with(buffer));
       state = STATE_AFTER_VALUE;
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
@@ -411,13 +411,13 @@ void JsonStreamingParser::endUnicodeSurrogateInterstitial() {
 void JsonStreamingParser::endNumber() {
     buffer[bufferPos] = '\0';
     if (strchr(buffer, '.') != NULL) {
-        float floatValue;
-        sscanf(buffer, "%f", &floatValue);
-        myListener->value(path, floatValue);
+      float floatValue;
+      sscanf(buffer, "%f", &floatValue);
+      myListener->value(path, elementValue.with(floatValue));
     } else {
-        long intValue;
-        sscanf(buffer, "%d", &intValue);
-        myListener->value(path, intValue);
+      long intValue;
+      sscanf(buffer, "%d", &intValue);
+      myListener->value(path, elementValue.with(intValue));
     }
     bufferPos = 0;
     state = STATE_AFTER_VALUE;
@@ -440,7 +440,7 @@ void JsonStreamingParser::endDocument() {
 void JsonStreamingParser::endTrue() {
     buffer[bufferPos] = '\0';
     if(strcmp(buffer, "true") == 0) {
-      myListener->value(path, true);
+      myListener->value(path, elementValue.with(true));
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Expected 'true'. Got: ".$true);
@@ -452,7 +452,7 @@ void JsonStreamingParser::endTrue() {
 void JsonStreamingParser::endFalse() {
     buffer[bufferPos] = '\0';
     if(strcmp(buffer, "false") == 0) {
-      myListener->value(path, false);
+      myListener->value(path, elementValue.with(false));
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Expected 'true'. Got: ".$true);
@@ -464,7 +464,7 @@ void JsonStreamingParser::endFalse() {
 void JsonStreamingParser::endNull() {
     buffer[bufferPos] = '\0';
     if(strcmp(buffer, "null") == 0) {
-      myListener->value(path);
+      myListener->value(path, elementValue.with());
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Expected 'true'. Got: ".$true);
