@@ -5,21 +5,19 @@
 class ExampleListener: public JsonListener {
 
   public:
-    virtual void whitespace(char c);
-  
     virtual void startDocument();
 
-    virtual void key(String key);
+    virtual void startArray(ElementPath path);
 
-    virtual void value(String value);
+    virtual void startObject(ElementPath path);
 
-    virtual void endArray();
+    virtual void endArray(ElementPath path);
 
-    virtual void endObject();
+    virtual void endObject(ElementPath path);
 
     virtual void endDocument();
 
-    virtual void startArray();
-
-    virtual void startObject();
+    virtual void value(ElementPath path, ElementValue value);
+  
+    virtual void whitespace(char c);
 };
