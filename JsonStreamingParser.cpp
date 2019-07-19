@@ -202,7 +202,7 @@ void JsonStreamingParser::parse(char c) {
   }
 
 void JsonStreamingParser::increaseBufferPointer() {
-  bufferPos = min(bufferPos + 1, BUFFER_MAX_LENGTH - 1);
+  bufferPos = min(bufferPos + 1, JSON_PARSER_BUFFER_MAX_LENGTH - 1);
 }
 
 void JsonStreamingParser::endString() {
