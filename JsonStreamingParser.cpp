@@ -503,6 +503,8 @@ void JsonStreamingParser::endUnicodeCharacter(int codepoint) {
       buffer[bufferPos] = (char) ((codepoint >> 6) | 0b11000000);
       increaseBufferPointer();
       buffer[bufferPos] = (char) ((codepoint & 0b00111111) | 0b10000000);
+    } else if (codepoint == 0x2019){
+      buffer[bufferPos] = '\''; // \u2019 ’
     } else {
       buffer[bufferPos] = ' ';
     }
