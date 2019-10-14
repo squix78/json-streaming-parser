@@ -81,21 +81,21 @@ class JsonStreamingParser {
 
     void endArray();
 
-    void startValue(char c);
+    void startValue(unsigned char c);
 
     void startKey();
 
-    void processEscapeCharacters(char c);
+    void processEscapeCharacters(unsigned char c);
 
-    boolean isDigit(char c);
+    boolean isDigit(unsigned char c);
 
-    boolean isHexCharacter(char c);
+    boolean isHexCharacter(unsigned char c);
 
-    char convertCodepointToCharacter(int num);
+    unsigned char convertCodepointToCharacter(int num);
 
     void endUnicodeCharacter(int codepoint);
 
-    void startNumber(char c);
+    void startNumber(unsigned char c);
 
     void startString();
 
@@ -111,17 +111,17 @@ class JsonStreamingParser {
 
     void endDocument();
 
-    int convertDecimalBufferToInt(char myArray[], int length);
+    int convertDecimalBufferToInt(unsigned char myArray[], int length);
 
     void endNumber();
 
     void endUnicodeSurrogateInterstitial();
 
-    boolean doesCharArrayContain(char myArray[], int length, char c);
+    boolean doesCharArrayContain(unsigned char myArray[], int length, unsigned char c);
 
-    int getHexArrayAsDecimal(char hexArray[], int length);
+    int getHexArrayAsDecimal(unsigned char hexArray[], int length);
 
-    void processUnicodeCharacter(char c);
+    void processUnicodeCharacter(unsigned char c);
 
     void endObject();
 
@@ -129,7 +129,7 @@ class JsonStreamingParser {
 
   public:
     JsonStreamingParser();
-    void parse(char c);
+    void parse(unsigned char c);
     void setListener(JsonListener* listener);
     void reset();
 };

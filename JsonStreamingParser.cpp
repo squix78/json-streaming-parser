@@ -41,7 +41,7 @@ void JsonStreamingParser::setListener(JsonListener* listener) {
   myListener = listener;
 }
 
-void JsonStreamingParser::parse(char c) {
+void JsonStreamingParser::parse(unsigned char c) {
     //System.out.print(c);
     // valid whitespace characters in JSON (from RFC4627 for JSON) include:
     // space, horizontal tab, line feed or new line, and carriage return.
@@ -58,7 +58,7 @@ void JsonStreamingParser::parse(char c) {
         endString();
       } else if (c == '\\') {
         state = STATE_START_ESCAPE;
-      } else if ((c < 0x1f) || (c == 0x7f)) {
+      } else if ((c < 0x1f) || (c == 0x7f) || (c >= 0x80 && c <= 0xa0) || (c == 0xad)) {
         //throw new RuntimeException("Unescaped control character encountered: " + c + " at position" + characterCounter);
       } else {
         buffer[bufferPos] = c;
@@ -146,7 +146,7 @@ void JsonStreamingParser::parse(char c) {
         buffer[bufferPos] = c;
         increaseBufferPointer();
       } else if (c == '+' || c == '-') {
-        char last = buffer[bufferPos - 1];
+        unsigned char last = buffer[bufferPos - 1];
         if (!(last == 'e' || last == 'E')) {
           //throw new RuntimeException("Can only have '+' or '-' after the 'e' or 'E' in a number." + characterCounter);
         }
@@ -222,7 +222,7 @@ void JsonStreamingParser::endString() {
     }
     bufferPos = 0;
   }
-void JsonStreamingParser::startValue(char c) {
+void JsonStreamingParser::startValue(unsigned char c) {
     if (c == '[') {
       startArray();
     } else if (c == '{') {
@@ -249,7 +249,7 @@ void JsonStreamingParser::startValue(char c) {
     }
   }
 
-boolean JsonStreamingParser::isDigit(char c) {
+boolean JsonStreamingParser::isDigit(unsigned char c) {
     // Only concerned with the first character in a number.
     return (c >= '0' && c <= '9') || c == '-';
   }
@@ -288,7 +288,7 @@ void JsonStreamingParser::endObject() {
     }
   }
 
-void JsonStreamingParser::processEscapeCharacters(char c) {
+void JsonStreamingParser::processEscapeCharacters(unsigned char c) {
     if (c == '"') {
       buffer[bufferPos] = '"';
       increaseBufferPointer();
@@ -324,7 +324,7 @@ void JsonStreamingParser::processEscapeCharacters(char c) {
     }
   }
 
-void JsonStreamingParser::processUnicodeCharacter(char c) {
+void JsonStreamingParser::processUnicodeCharacter(unsigned char c) {
     if (!isHexCharacter(c)) {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Expected hex character for escaped Unicode character. Unicode parsed: "
@@ -360,14 +360,14 @@ void JsonStreamingParser::processUnicodeCharacter(char c) {
       }*/
     }
   }
-boolean JsonStreamingParser::isHexCharacter(char c) {
+boolean JsonStreamingParser::isHexCharacter(unsigned char c) {
     return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
   }
 
-int JsonStreamingParser::getHexArrayAsDecimal(char hexArray[], int length) {
+int JsonStreamingParser::getHexArrayAsDecimal(unsigned char hexArray[], int length) {
     int result = 0;
     for (int i = 0; i < length; i++) {
-      char current = hexArray[length - i - 1];
+      unsigned char current = hexArray[length - i - 1];
       int value = 0;
       if (current >= 'a' && current <= 'f') {
         value = current - 'a' + 10;
@@ -381,7 +381,7 @@ int JsonStreamingParser::getHexArrayAsDecimal(char hexArray[], int length) {
     return result;
   }
 
-boolean JsonStreamingParser::doesCharArrayContain(char myArray[], int length, char c) {
+boolean JsonStreamingParser::doesCharArrayContain(unsigned char myArray[], int length, unsigned char c) {
     for (int i = 0; i < length; i++) {
       if (myArray[i] == c) {
         return true;
@@ -417,10 +417,10 @@ void JsonStreamingParser::endNumber() {
     state = STATE_AFTER_VALUE;
   }
 
-int JsonStreamingParser::convertDecimalBufferToInt(char myArray[], int length) {
+int JsonStreamingParser::convertDecimalBufferToInt(unsigned char myArray[], int length) {
     int result = 0;
     for (int i = 0; i < length; i++) {
-      char current = myArray[length - i - 1];
+      unsigned char current = myArray[length - i - 1];
       result += (current - '0') * 10;
     }
     return result;
@@ -490,7 +490,7 @@ void JsonStreamingParser::startString() {
     state = STATE_IN_STRING;
   }
 
-void JsonStreamingParser::startNumber(char c) {
+void JsonStreamingParser::startNumber(unsigned char c) {
     state = STATE_IN_NUMBER;
     buffer[bufferPos] = c;
     increaseBufferPointer();
@@ -504,9 +504,9 @@ void JsonStreamingParser::endUnicodeCharacter(int codepoint) {
     state = STATE_IN_STRING;
   }
 
-char JsonStreamingParser::convertCodepointToCharacter(int num) {
+unsigned char JsonStreamingParser::convertCodepointToCharacter(int num) {
     if (num <= 0x7F)
-      return (char) (num);
+      return (unsigned char) (num);
     // if(num<=0x7FF) return (char)((num>>6)+192) + (char)((num&63)+128);
     // if(num<=0xFFFF) return
     // chr((num>>12)+224).chr(((num>>6)&63)+128).chr((num&63)+128);
