@@ -43,6 +43,7 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 #define STATE_IN_NULL            11
 #define STATE_AFTER_VALUE        12
 #define STATE_UNICODE_SURROGATE  13
+#define STATE_UNESCAPED_UTF8     14
 
 #define STACK_OBJECT             0
 #define STACK_ARRAY              1
@@ -67,6 +68,9 @@ class JsonStreamingParser {
 
     char unicodeEscapeBuffer[10];
     int unicodeEscapeBufferPos = 0;
+    
+    char utf8Length = 0;
+    char utf8Pos = 0;
 
     char unicodeBuffer[10];
     int unicodeBufferPos = 0;
@@ -81,21 +85,21 @@ class JsonStreamingParser {
 
     void endArray();
 
-    void startValue(char c);
+    void startValue(unsigned char c);
 
     void startKey();
 
-    void processEscapeCharacters(char c);
+    void processEscapeCharacters(unsigned char c);
 
-    boolean isDigit(char c);
+    boolean isDigit(unsigned char c);
 
-    boolean isHexCharacter(char c);
+    boolean isHexCharacter(unsigned char c);
 
-    char convertCodepointToCharacter(int num);
+    unsigned char convertCodepointToCharacter(int num);
 
     void endUnicodeCharacter(int codepoint);
 
-    void startNumber(char c);
+    void startNumber(unsigned char c);
 
     void startString();
 
@@ -111,17 +115,17 @@ class JsonStreamingParser {
 
     void endDocument();
 
-    int convertDecimalBufferToInt(char myArray[], int length);
+    int convertDecimalBufferToInt(unsigned char myArray[], int length);
 
     void endNumber();
 
     void endUnicodeSurrogateInterstitial();
 
-    boolean doesCharArrayContain(char myArray[], int length, char c);
+    boolean doesCharArrayContain(unsigned char myArray[], int length, unsigned char c);
 
-    int getHexArrayAsDecimal(char hexArray[], int length);
+    int getHexArrayAsDecimal(unsigned char hexArray[], int length);
 
-    void processUnicodeCharacter(char c);
+    void processUnicodeCharacter(unsigned char c);
 
     void endObject();
 
@@ -129,7 +133,7 @@ class JsonStreamingParser {
 
   public:
     JsonStreamingParser();
-    void parse(char c);
+    void parse(unsigned char c);
     void setListener(JsonListener* listener);
     void reset();
 };
