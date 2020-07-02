@@ -428,7 +428,11 @@ int JsonStreamingParser::convertDecimalBufferToInt(char myArray[], int length) {
 
 void JsonStreamingParser::endDocument() {
     myListener->endDocument();
-    state = STATE_DONE;
+    state = STATE_START_DOCUMENT;
+    bufferPos = 0;
+    unicodeEscapeBufferPos = 0;
+    unicodeBufferPos = 0;
+    characterCounter = 0;
   }
 
 void JsonStreamingParser::endTrue() {
