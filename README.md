@@ -1,9 +1,9 @@
-# json-streaming-parser
-Arduino library for parsing potentially huge json streams on devices with scarce memory.
+# json-streaming-parser2
+Arduino library for parsing potentially huge json streams on devices with scarce memory. 
 
-This library is a port of Salsify's PHP based json streaming parser (https://github.com/salsify/jsonstreamingparser).
+This library is a fok of squix78's json-streaming-parser, which itself is a port of Salsify's PHP based json streaming parser (https://github.com/salsify/jsonstreamingparser).
 
-Furthermore, this is a fork by stechio departing from squix78's original library to introduce some key enhancements:
+Furthermore, this is a fork by stechio departing from squix78's original library to introduce some key enhancements from other pull requests:
  * explicit element path tracking (ElementPath class): object keys and array indices are managed in a robust, unified manner and exposed in each and every event (users are relieved the pain to jury-rig their own custom event-filtering mechanism)
  * string flattening: adhering to common best practises, cumbersome instances of std::string have been replaced by plain C-style char arrays.
  * strongly-typed values: untypified (string) value event method has been replaced by a strongly-typed one corresponding to actual serialization types.
@@ -33,8 +33,8 @@ DOM parser, the business logic becomes part of the parser.
 ## How to install
 
 Until the library becomes available in the Arduino IDE library manager you'll have to do a bit more work by hand.
-1) Download this library: https://github.com/squix78/json-streaming-parser/archive/master.zip
-2) Rename master.zip to json-streaming-parser.zip
+1) Download this library: https://github.com/mrfaptastic/json-streaming-parser2/archive/master.zip
+2) Rename master.zip to json-streaming-parser2.zip
 3) Open the zip file in the Arduino IDE from menu Sketch > Include Library > Add ZIP Library...
 
 ## How to use
@@ -59,8 +59,4 @@ This code is available under the MIT license, which basically means that you can
 
 ## Credits
 
-First of all I'd like to thank Salsify for making their PHP parser available to the public. You find their repository here: https://github.com/salsify/jsonstreamingparser
-
-Then I'd like to thank my employer Netcetera (https://github.com/netceteragroup) to let us hackers go twice a year to the CodeCamp and work on software projects like this one.
-
-And last but not least I'd like to thank my wife that she led me spend three days away from the family hacking in the wonderful mountains of Berne.
+https://github.com/squix78/json-streaming-parser
