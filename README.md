@@ -3,6 +3,11 @@ Arduino library for parsing potentially huge json streams on devices with scarce
 
 This library is a port of Salsify's PHP based json streaming parser (https://github.com/salsify/jsonstreamingparser).
 
+Furthermore, this is a fork by stechio departing from squix78's original library to introduce some key enhancements:
+ * explicit element path tracking (ElementPath class): object keys and array indices are managed in a robust, unified manner and exposed in each and every event (users are relieved the pain to jury-rig their own custom event-filtering mechanism)
+ * string flattening: adhering to common best practises, cumbersome instances of std::string have been replaced by plain C-style char arrays.
+ * strongly-typed values: untypified (string) value event method has been replaced by a strongly-typed one corresponding to actual serialization types.
+
 ## Why yet another JSON parser?
 
 When working with small (connected) devices you might quickly get to the point where you need to process potentially huge JSON object received from a REST interface.
@@ -39,13 +44,12 @@ stream whatever you are interested in. In order to do that you will create a sub
 implement methods which will be notified in case of certain events in the feed occure. Available events are:
 
  * startDocument()
- * key(String key)
- * value(String value)
- * endArray()
- * endObject()
  * endDocument()
- * startArray()
- * startObject()
+ * startArray(ElementPath path)
+ * endArray(ElementPath path)
+ * startObject(ElementPath path)
+ * endObject(ElementPath path)
+ * value(ElementPath path, ElementValue value)
 
 In your implementation of these methods you will have to write problem specific code to find the parts of the document that you are interested in. Please see the example to understand what that means. In the example the ExampleListener implements the event methods declared in the JsonListener interface and prints to the serial console when they are called.
 

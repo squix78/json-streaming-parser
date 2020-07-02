@@ -2,6 +2,9 @@
 
 Copyright (c) 2015 by Daniel Eichhorn
 
+Contributors:
+    Stefano Chizzolini
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -56,10 +59,13 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 class JsonStreamingParser {
   private:
 
-
     int state;
     int stack[20];
     int stackPos = 0;
+    
+    ElementValue elementValue;
+    ElementPath path;
+    
     JsonListener* myListener;
 
     boolean doEmitWhitespace = false;
@@ -126,8 +132,6 @@ class JsonStreamingParser {
     void processUnicodeCharacter(char c);
 
     void endObject();
-
-
 
   public:
     JsonStreamingParser();
