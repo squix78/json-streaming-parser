@@ -366,7 +366,7 @@ boolean JsonStreamingParser::isHexCharacter(char c) {
 
 int JsonStreamingParser::getHexArrayAsDecimal(char hexArray[], int length) {
     int result = 0;
-    for (int i = 0; i < length; i++) {
+    for (int i = length; i >= 0; i--) {
       char current = hexArray[length - i - 1];
       int value = 0;
       if (current >= 'a' && current <= 'f') {
@@ -376,7 +376,7 @@ int JsonStreamingParser::getHexArrayAsDecimal(char hexArray[], int length) {
       } else if (current >= '0' && current <= '9') {
         value = current - '0';
       }
-      result += value * 16^i;
+      result = (result << 4) | value;
     }
     return result;
   }
@@ -501,20 +501,19 @@ void JsonStreamingParser::startNumber(char c) {
   }
 
 void JsonStreamingParser::endUnicodeCharacter(int codepoint) {
-    buffer[bufferPos] = convertCodepointToCharacter(codepoint);
+    if (codepoint < 0x80){
+      buffer[bufferPos] = (char) (codepoint);
+    } else if (codepoint <= 0x800){
+      buffer[bufferPos] = (char) ((codepoint >> 6) | 0b11000000);
+      increaseBufferPointer();
+      buffer[bufferPos] = (char) ((codepoint & 0b00111111) | 0b10000000);
+    } else if (codepoint == 0x2019){
+      buffer[bufferPos] = '\''; // \u2019 ’
+    } else {
+      buffer[bufferPos] = ' ';
+    }
     increaseBufferPointer();
     unicodeBufferPos = 0;
     unicodeHighSurrogate = -1;
     state = STATE_IN_STRING;
-  }
-
-char JsonStreamingParser::convertCodepointToCharacter(int num) {
-    if (num <= 0x7F)
-      return (char) (num);
-    // if(num<=0x7FF) return (char)((num>>6)+192) + (char)((num&63)+128);
-    // if(num<=0xFFFF) return
-    // chr((num>>12)+224).chr(((num>>6)&63)+128).chr((num&63)+128);
-    // if(num<=0x1FFFFF) return
-    // chr((num>>18)+240).chr(((num>>12)&63)+128).chr(((num>>6)&63)+128).chr((num&63)+128);
-    return ' ';
   }
