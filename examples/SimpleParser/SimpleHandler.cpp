@@ -1,19 +1,19 @@
-#include "ExampleParser.h"
-#include "JsonListener.h"
+#include "SimpleHandler.h"
+#include "JsonHandler.h"
 
-void ExampleListener::startDocument() {
+void SimpleHandler::startDocument() {
   Serial.println("start document");
 }
 
-void ExampleListener::startArray(ElementPath path) {
+void SimpleHandler::startArray(ElementPath path) {
   Serial.println("start array. ");
 }
 
-void ExampleListener::startObject(ElementPath path) {
+void SimpleHandler::startObject(ElementPath path) {
   Serial.println("start object. ");
 }
 
-void ExampleListener::value(ElementPath path, ElementValue value) {
+void SimpleHandler::value(ElementPath path, ElementValue value) {
   char fullPath[200] = "";
   path.toString(fullPath);
   Serial.print(fullPath);
@@ -24,9 +24,14 @@ void ExampleListener::value(ElementPath path, ElementValue value) {
   const char* currentKey = path.getKey();
   // Object entry?
   if(currentKey[0] != '\0') {
-    if(strcmp(currentKey, "temp") == 0) {
-      //TODO: use the value.
+    if(strcmp(currentKey, "mykey") == 0) {
+      
+      // CONTEXTUAL AWARE EXTRACTION OF JSON VALUES
+      // Used later in getMyKeyString
+      mykey_value = value.getInt();
+      
     } else if(strcmp(currentKey, "pressure") == 0) {
+      
       //TODO: use the value.
     }
     // else ... 
@@ -43,18 +48,18 @@ void ExampleListener::value(ElementPath path, ElementValue value) {
   }
 }
 
-void ExampleListener::endArray(ElementPath path) {
+void SimpleHandler::endArray(ElementPath path) {
   Serial.println("end array. ");
 }
 
-void ExampleListener::endObject(ElementPath path) {
+void SimpleHandler::endObject(ElementPath path) {
   Serial.println("end object. ");
 }
 
-void ExampleListener::endDocument() {
+void SimpleHandler::endDocument() {
   Serial.println("end document. ");
 }
 
-void ExampleListener::whitespace(char c) {
+void SimpleHandler::whitespace(char c) {
   Serial.println("whitespace");
 }

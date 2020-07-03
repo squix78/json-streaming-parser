@@ -23,10 +23,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-parser
+
 */
 
-#include "JsonStreamingParser.h"
+#include "JsonStreamingParser2.h"
 
 JsonStreamingParser::JsonStreamingParser() {
     reset();
@@ -40,11 +40,16 @@ void JsonStreamingParser::reset() {
     characterCounter = 0;
 }
 
-void JsonStreamingParser::setListener(JsonListener* listener) {
-  myListener = listener;
+void JsonStreamingParser::setHandler(JsonHandler* handler) {
+  myHandler = handler;
 }
 
 void JsonStreamingParser::parse(char c) {
+	
+#ifdef ARDUINO_ARCH_ESP8266	
+	yield(); // reduce crashes
+#endif	
+	
     //System.out.print(c);
     // valid whitespace characters in JSON (from RFC4627 for JSON) include:
     // space, horizontal tab, line feed or new line, and carriage return.
@@ -184,7 +189,7 @@ void JsonStreamingParser::parse(char c) {
       }
       break;
     case STATE_START_DOCUMENT:
-      myListener->startDocument();
+      myHandler->startDocument();
       if (c == '[') {
         startArray();
       } else if (c == '{') {
@@ -218,7 +223,7 @@ void JsonStreamingParser::endString() {
       state = STATE_END_KEY;
     } else if (popped == STACK_STRING) {
       buffer[bufferPos] = '\0';
-      myListener->value(path, elementValue.with(buffer));
+      myHandler->value(path, elementValue.with(buffer));
       state = STATE_AFTER_VALUE;
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
@@ -227,6 +232,11 @@ void JsonStreamingParser::endString() {
     bufferPos = 0;
   }
 void JsonStreamingParser::startValue(char c) {
+	
+#ifdef ARDUINO_ARCH_ESP8266	
+	yield();
+#endif
+	
     if (c == '[') {
       startArray();
     } else if (c == '{') {
@@ -266,7 +276,7 @@ void JsonStreamingParser::endArray() {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Unexpected end of array encountered.");
     }
-    myListener->endArray(path);
+    myHandler->endArray(path);
     state = STATE_AFTER_VALUE;
     if (stackPos == 0) {
       endDocument();
@@ -287,7 +297,7 @@ void JsonStreamingParser::endObject() {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Unexpected end of object encountered.");
     }
-    myListener->endObject(path);
+    myHandler->endObject(path);
     state = STATE_AFTER_VALUE;
     if (stackPos == 0) {
       endDocument();
@@ -413,11 +423,11 @@ void JsonStreamingParser::endNumber() {
     if (strchr(buffer, '.') != NULL) {
       float floatValue;
       sscanf(buffer, "%f", &floatValue);
-      myListener->value(path, elementValue.with(floatValue));
+      myHandler->value(path, elementValue.with(floatValue));
     } else {
       long intValue;
       sscanf(buffer, "%d", &intValue);
-      myListener->value(path, elementValue.with(intValue));
+      myHandler->value(path, elementValue.with(intValue));
     }
     bufferPos = 0;
     state = STATE_AFTER_VALUE;
@@ -433,7 +443,7 @@ int JsonStreamingParser::convertDecimalBufferToInt(char myArray[], int length) {
   }
 
 void JsonStreamingParser::endDocument() {
-    myListener->endDocument();
+    myHandler->endDocument();
     state = STATE_START_DOCUMENT;
     bufferPos = 0;
     unicodeEscapeBufferPos = 0;
@@ -444,7 +454,7 @@ void JsonStreamingParser::endDocument() {
 void JsonStreamingParser::endTrue() {
     buffer[bufferPos] = '\0';
     if(strcmp(buffer, "true") == 0) {
-      myListener->value(path, elementValue.with(true));
+      myHandler->value(path, elementValue.with(true));
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Expected 'true'. Got: ".$true);
@@ -456,7 +466,7 @@ void JsonStreamingParser::endTrue() {
 void JsonStreamingParser::endFalse() {
     buffer[bufferPos] = '\0';
     if(strcmp(buffer, "false") == 0) {
-      myListener->value(path, elementValue.with(false));
+      myHandler->value(path, elementValue.with(false));
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Expected 'true'. Got: ".$true);
@@ -468,7 +478,7 @@ void JsonStreamingParser::endFalse() {
 void JsonStreamingParser::endNull() {
     buffer[bufferPos] = '\0';
     if(strcmp(buffer, "null") == 0) {
-      myListener->value(path, elementValue.with());
+      myHandler->value(path, elementValue.with());
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Expected 'true'. Got: ".$true);
@@ -478,7 +488,7 @@ void JsonStreamingParser::endNull() {
   }
 
 void JsonStreamingParser::startArray() {
-    myListener->startArray(path);
+    myHandler->startArray(path);
     state = STATE_IN_ARRAY;
     stack[stackPos] = STACK_ARRAY;
     path.push(); 
@@ -486,7 +496,7 @@ void JsonStreamingParser::startArray() {
   }
 
 void JsonStreamingParser::startObject() {
-    myListener->startObject(path);
+    myHandler->startObject(path);
     state = STATE_IN_OBJECT;
     stack[stackPos] = STACK_OBJECT;
     path.push(); 

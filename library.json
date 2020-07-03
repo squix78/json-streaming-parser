@@ -1,21 +1,21 @@
 {
-  "name": "JsonStreamingParser",
-  "keywords": "json, streaming",
-  "description": "A very memory efficient library to parse (large) JSON objects on embedded devices",
+  "name": "JsonStreamingParser2",
+  "keywords": "json, streaming, https, http, wifi",
+  "description": "A very memory efficient library to parse (large) JSON objects from HTTP or HTTPS on embedded devices.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/squix78/json-streaming-parser.git"
+    "url": "https://github.com/mrfaptastic/json-streaming-parser2.git"
   },
   "authors": {
-    "name": "Daniel Eichhorn",
-    "url": "http://blog.squix.ch"
+    "name": "Faptastic",
+    "url": "https://github.com/mrfaptastic/"
   },
-  "version": "1.0.5",
+  "version": "0.0.1",
   "frameworks": "arduino",
   "platforms": "*",
   "examples": [
-    "examples/JsonStreamingParser/*.ino",
-    "examples/JsonStreamingParser/*.cpp",
-    "examples/JsonStreamingParser/*.h"
+    "examples/JsonStreamingParser2/*.ino",
+    "examples/JsonStreamingParser2/*.cpp",
+    "examples/JsonStreamingParser2/*.h"
   ]
 }

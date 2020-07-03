@@ -29,7 +29,7 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 #pragma once
 
 #include <Arduino.h>
-#include "JsonListener.h"
+#include "JsonHandler.h"
 
 #define STATE_START_DOCUMENT     0
 #define STATE_DONE               -1
@@ -66,7 +66,7 @@ class JsonStreamingParser {
     ElementValue elementValue;
     ElementPath path;
     
-    JsonListener* myListener;
+    JsonHandler* myHandler;
 
     boolean doEmitWhitespace = false;
     // fixed length buffer array to prepare for c code
@@ -136,6 +136,6 @@ class JsonStreamingParser {
   public:
     JsonStreamingParser();
     void parse(char c);
-    void setListener(JsonListener* listener);
+    void setHandler(JsonHandler* handler);
     void reset();
 };

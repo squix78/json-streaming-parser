@@ -32,7 +32,7 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 #include "ElementPath.h"
 #include "ElementValue.h"
 
-class JsonListener {
+class JsonHandler {
   private:
 
   public:
