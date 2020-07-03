@@ -1,35 +1,19 @@
 /* 
  * An enhanced example where of the traditional JSON Stream Parser acts as a 'Streamable' interface
  * and takes the data directly from the WiFi receive buffers and begins parsing.
+ *
+ * The results we care about are then put into a stl::map for lookup based on key.
+ * Not totally memory efficient, but not the worst either.
  */
- 
-#define USE_HTTPS_MODE 1 // on the ESP8266 this is dangerous... https://www.esp8266.com/viewtopic.php?p=69937
-					     // and https://esp8266life.wordpress.com/2019/01/13/memory-memory-always-memory/
-
 #include <ESP8266WiFi.h>
-
-  #ifdef USE_HTTPS_MODE
-    #include <WiFiClientSecureBearSSL.h>  
-  #else
-    #include <WiFiClient.h>                      
-  #endif
-
-
+#include <WiFiClientSecureBearSSL.h>  
 #include <ESP8266HTTPClient.h>  
-
-
-//#include <JsonStreamingParser2.h>         // Note: This isn't used!
 #include "ExampleHandler.h"                 // Custom JSON document handler
 #include <ArduinoStreamParser.h>            // <==== THE JSON Streaming Parser - Arduino STREAM WRAPPER
-
-
-// IF not HTTPS
-#ifndef USE_HTTPS_MODE
-  WiFiClient client;
-#endif  
+#include <map>
+#include <string>
 
 HTTPClient http; // Used for both SSl and non-SSL connections
-
 
 void printHeapFreeToSerial()
 {
@@ -66,17 +50,15 @@ void setup()
     Serial.println(WiFi.localIP());
     printHeapFreeToSerial();
 
-  #ifdef USE_HTTPS_MODE
-    
-      // Fingerprint for demo URL, expires on June 2, 2021, needs to be updated well before this date
-      const uint8_t fingerprint[20] = {0x40, 0xaf, 0x00, 0x6b, 0xec, 0x90, 0x22, 0x41, 0x8e, 0xa3, 0xad, 0xfa, 0x1a, 0xe8, 0x25, 0x41, 0x1d, 0x1a, 0x54, 0xb3};
-  
-      std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
-      client->setFingerprint(fingerprint);    
-      client->setInsecure();
-      Serial.println("SSL fingerprint set.");
-      printHeapFreeToSerial(); 
-  #endif
+ 
+    // Fingerprint for demo URL, expires on June 2, 2021, needs to be updated well before this date
+    const uint8_t fingerprint[20] = {0x40, 0xaf, 0x00, 0x6b, 0xec, 0x90, 0x22, 0x41, 0x8e, 0xa3, 0xad, 0xfa, 0x1a, 0xe8, 0x25, 0x41, 0x1d, 0x1a, 0x54, 0xb3};
+
+    std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
+    client->setFingerprint(fingerprint);    
+    client->setInsecure();
+    Serial.println("SSL fingerprint set.");
+    printHeapFreeToSerial(); 
 
     // Open Weather Map JSON Streaming Parser
     ArudinoStreamParser parser;
@@ -88,11 +70,7 @@ void setup()
     printHeapFreeToSerial();    
 
     // Lets being
-   #ifdef USE_HTTPS_MODE
     http.begin(*client, "https://samples.openweathermap.org/data/2.5/forecast?q=London,us&appid=439d4b804bc8187953eb36d2a8c26a02");
-   #else
-    http.begin(client, "http://xxxxx");
-   #endif
     
     
     // start connection and send HTTP header
@@ -130,6 +108,11 @@ void setup()
     
     Serial.println("Done.");    
     printHeapFreeToSerial();   
+    
+    Serial.println("----------------- PRINTING VALUES -----------------");
+    for (auto& x: mymap) {
+            Serial.print(x.first.c_str()); Serial.print (" = " ); Serial.println(x.second);
+    }  
  
 }
 

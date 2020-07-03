@@ -4,7 +4,7 @@
 size_t ArudinoStreamParser::write(const uint8_t *data, size_t size) {
 	
 	// Trick the Stream Class into thinking it's writing to memory
-	Serial.println("ArudinoStreamParser::write(data, size)");
+	//Serial.println("ArudinoStreamParser::write(data, size)");
 	
 	uint8_t char_val = 0x00;
 	
@@ -19,7 +19,7 @@ size_t ArudinoStreamParser::write(const uint8_t *data, size_t size) {
             return size;
         
 		
-        DEBUGV(":ArudinoStreamParser: OOM (%d->%d)\n", size);        
+       // DEBUGV(":ArudinoStreamParser: OOM (%d->%d)\n", size);        
     }
 	
     return 0;
@@ -27,7 +27,7 @@ size_t ArudinoStreamParser::write(const uint8_t *data, size_t size) {
 
 size_t ArudinoStreamParser::write(uint8_t data) {
 	
-	Serial.println("ArudinoStreamParser::write(char)");
+	//Serial.println("ArudinoStreamParser::write(char)");
 
 	// Catch the write of the byte/char from the arduino library.
 	parse(data);

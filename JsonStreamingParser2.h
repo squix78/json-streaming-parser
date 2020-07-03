@@ -53,7 +53,7 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 #define STACK_STRING             3
 
 #ifndef JSON_PARSER_BUFFER_MAX_LENGTH
-#define JSON_PARSER_BUFFER_MAX_LENGTH  512
+#define JSON_PARSER_BUFFER_MAX_LENGTH  256
 #endif
 
 class JsonStreamingParser {
@@ -69,6 +69,7 @@ class JsonStreamingParser {
     JsonHandler* myHandler;
 
     boolean doEmitWhitespace = false;
+	
     // fixed length buffer array to prepare for c code
     char buffer[JSON_PARSER_BUFFER_MAX_LENGTH];
     int bufferPos = 0;
