@@ -99,8 +99,7 @@ class ExampleHandler: public JsonHandler
           }
       }
 
-      
-      // End document
+	  // Functions we don't care about.
       void startDocument() { }
       void startArray(ElementPath path) {}
       void startObject(ElementPath path) { }
