@@ -51,7 +51,7 @@ void setup()
     
     Serial.println("Starting........."); printHeapFreeToSerial();
     
-    WiFi.begin("The_Nest", "Pa$$w0rd3");
+    WiFi.begin("XXXXX", "XXXXX");
     
     Serial.print("Connecting");
     while (WiFi.status() != WL_CONNECTED)
