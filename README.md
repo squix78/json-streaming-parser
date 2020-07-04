@@ -59,4 +59,6 @@ This code is available under the MIT license, which basically means that you can
 
 ## Credits
 
-https://github.com/squix78/json-streaming-parser
+squix78 for the original Arduino implementation: https://github.com/squix78/json-streaming-parser
+
+Stechio for enhancements: https://github.com/stechio/json-streaming-parser
