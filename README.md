@@ -56,7 +56,7 @@ DOM parser, the business logic becomes part of the parser.
 
 ## License
 
-This code is available under the MIT license, which basically means that you can use, modify the distribute the code as long as you give credits to me (and Salsify) and add a reference back to this repository. Please read https://github.com/squix78/json-streaming-parser/blob/master/LICENSE for more detail...
+This code is available under the MIT license, which basically means that you can use, modify the distribute the code as long as you give credits to Squix78 and Salsify and add a reference to this repository.
 
 ## Credits
 
