@@ -5,7 +5,7 @@
  * The results we care about are then put into a stl::map for lookup based on key.
  * Not totally memory efficient, but not the worst either.
  *
- * The use of SSL is by far the biggest consumer of memory, with over 20kB of SRAM blows away by this alone.
+ * The use of SSL is by far the biggest consumer of memory, with over 20kB of SRAM consumed by this alone.
  */
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecureBearSSL.h>  
