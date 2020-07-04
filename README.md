@@ -3,7 +3,7 @@ Arduino library for parsing potentially huge json streams on devices with scarce
 
 This library is a fork of squix78's json-streaming-parser, which itself is a port of Salsify's PHP based json streaming parser (https://github.com/salsify/jsonstreamingparser).
 
-Furthermore, this fork implements significant improvements by stechio departing from squix78's original library to introduce:
+Furthermore, this fork implements significant improvements by [stechio](https://github.com/stechio/json-streaming-parser) departing from squix78's original library to introduce:
  * Explicit element path tracking (ElementPath class): object keys and array indices are managed in a robust, unified manner and exposed in each and every event (users are relieved the pain to jury-rig their own custom event-filtering mechanism)
  * String flattening: adhering to common best practises, cumbersome instances of std::string have been replaced by plain C-style char arrays.
  * Strongly-typed values: untypified (string) value event method has been replaced by a strongly-typed one corresponding to actual serialization types.
