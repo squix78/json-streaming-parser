@@ -1,12 +1,36 @@
 # JSON Streaming Parser 2
 Arduino library for parsing potentially huge json streams on devices with scarce memory. 
 
-This library is a fok of squix78's json-streaming-parser, which itself is a port of Salsify's PHP based json streaming parser (https://github.com/salsify/jsonstreamingparser).
+This library is a fork of squix78's json-streaming-parser, which itself is a port of Salsify's PHP based json streaming parser (https://github.com/salsify/jsonstreamingparser).
 
 Furthermore, this is a fork by stechio departing from squix78's original library to introduce some key enhancements from other pull requests:
- * explicit element path tracking (ElementPath class): object keys and array indices are managed in a robust, unified manner and exposed in each and every event (users are relieved the pain to jury-rig their own custom event-filtering mechanism)
- * string flattening: adhering to common best practises, cumbersome instances of std::string have been replaced by plain C-style char arrays.
- * strongly-typed values: untypified (string) value event method has been replaced by a strongly-typed one corresponding to actual serialization types.
+ * Explicit element path tracking (ElementPath class): object keys and array indices are managed in a robust, unified manner and exposed in each and every event (users are relieved the pain to jury-rig their own custom event-filtering mechanism)
+ * String flattening: adhering to common best practises, cumbersome instances of std::string have been replaced by plain C-style char arrays.
+ * Strongly-typed values: untypified (string) value event method has been replaced by a strongly-typed one corresponding to actual serialization types.
+ 
+Finally, a couple of useful real life examples have been provided to get you started. 
+
+## How to install
+
+Until the library becomes available in the Arduino IDE library manager you'll have to do a bit more work by hand.
+1) Download this library: https://github.com/mrfaptastic/json-streaming-parser2/archive/master.zip
+2) Rename master.zip to json-streaming-parser2.zip
+3) Open the zip file in the Arduino IDE from menu Sketch > Include Library > Add ZIP Library...
+
+## How to use
+
+This is a streaming parser, which means that you feed a stream of chars into the parser and you take out from that stream whatever you are interested in. In order to do that you will create a subclass of JsonHandler class and implement methods which will be notified in case of certain events in the feed occure. Available events are:
+
+ * startDocument()
+ * endDocument()
+ * startArray(ElementPath path)
+ * endArray(ElementPath path)
+ * startObject(ElementPath path)
+ * endObject(ElementPath path)
+ * value(ElementPath path, ElementValue value)
+
+In your implementation of these methods you will have to write problem specific code to find the parts of the document that you are interested in. Please see the example to understand what that means. In the example the ExampleHandler implements the event methods declared in the JsonHandler interface and prints to the serial console when they are called.
+
 
 ## Why yet another JSON parser?
 
@@ -29,29 +53,6 @@ the data as soon as meaningful parts are available and b) you can drop informati
 it. This reduces the memory consumption a lot, especially if you retrieve huge documents when only being interested
 by a small subset of it. But this efficiency comes at a price: your code will have to do more "magic" than with a
 DOM parser, the business logic becomes part of the parser.
-
-## How to install
-
-Until the library becomes available in the Arduino IDE library manager you'll have to do a bit more work by hand.
-1) Download this library: https://github.com/mrfaptastic/json-streaming-parser2/archive/master.zip
-2) Rename master.zip to json-streaming-parser2.zip
-3) Open the zip file in the Arduino IDE from menu Sketch > Include Library > Add ZIP Library...
-
-## How to use
-
-This is a streaming parser, which means that you feed a stream of chars into the parser and you take out from that
-stream whatever you are interested in. In order to do that you will create a subclass of JsonListener class and
-implement methods which will be notified in case of certain events in the feed occure. Available events are:
-
- * startDocument()
- * endDocument()
- * startArray(ElementPath path)
- * endArray(ElementPath path)
- * startObject(ElementPath path)
- * endObject(ElementPath path)
- * value(ElementPath path, ElementValue value)
-
-In your implementation of these methods you will have to write problem specific code to find the parts of the document that you are interested in. Please see the example to understand what that means. In the example the ExampleListener implements the event methods declared in the JsonListener interface and prints to the serial console when they are called.
 
 ## License
 
