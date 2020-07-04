@@ -1,5 +1,5 @@
-{
-  "name": "JsonStreamingParser2",
+ {
+  "name": "Json Streaming Parser 2",
   "keywords": "json, streaming, https, http, wifi",
   "description": "A memory efficient library to parse (large) JSON objects from HTTP or HTTPS on embedded devices.",
   "repository": {
