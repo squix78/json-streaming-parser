@@ -16,11 +16,11 @@
   "examples": [
     "examples/HTTPS_StreamParser/*.ino",
     "examples/HTTPS_StreamParser/*.cpp",
-    "examples/HTTPS_StreamParser/*.h"
+    "examples/HTTPS_StreamParser/*.h",
 	
     "examples/HTTPS_StreamParser_Map/*.ino",
     "examples/HTTPS_StreamParser_Map/*.cpp",
-    "examples/HTTPS_StreamParser_Map/*.h"	
+    "examples/HTTPS_StreamParser_Map/*.h",	
 	
     "examples/SimpleParser/*.ino",
     "examples/SimpleParser/*.cpp",
