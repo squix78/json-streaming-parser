@@ -1,7 +1,7 @@
  {
   "name": "Json Streaming Parser 2",
   "keywords": "json, streaming, https, http, wifi",
-  "description": "A memory efficient library to parse (large) JSON objects from HTTP or HTTPS on embedded devices.",
+  "description": "A memory efficient library to parse (large) JSON objects from HTTP or HTTPS on embedded devices. Library includes useful example sketches.",
   "repository": {
     "type": "git",
     "url": "https://github.com/mrfaptastic/json-streaming-parser2.git"
