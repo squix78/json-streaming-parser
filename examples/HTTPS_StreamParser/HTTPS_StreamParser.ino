@@ -1,6 +1,9 @@
 /* 
  * An enhanced example where of the traditional JSON Stream Parser acts as a 'Streamable' interface
  * and takes the data directly from the WiFi receive buffers and begins parsing.
+ *
+ * Note: This sketch does nothing more than print to Serial how it views the received JSON.
+ *
  */
  
 #define USE_HTTPS_MODE 1 // on the ESP8266 this is dangerous... https://www.esp8266.com/viewtopic.php?p=69937
