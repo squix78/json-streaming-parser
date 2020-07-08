@@ -89,7 +89,7 @@ struct ElementValue {
       } else if(isFloat()) {
         sprintf(buffer, "%f", getFloat());
       } else if(isString()) {
-        sprintf(buffer, "\"%s\"", getString());
+        sprintf(buffer, "\"%s\"", getString()); // Note: This adds "'s (quote symbols) either side of the actual string value.
       } else if(isBool()) {
         strcpy(buffer, getBool() ? "true" : "false");
       } else if(isNull()) {

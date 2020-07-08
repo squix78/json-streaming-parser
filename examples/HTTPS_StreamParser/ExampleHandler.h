@@ -3,6 +3,10 @@
 #include "JsonHandler.h"
 
 class ExampleHandler: public JsonHandler {
+	
+  private:
+	int  counter = 0;
+	bool in_json_object_of_interest = false;
 
   public:
     virtual void startDocument();

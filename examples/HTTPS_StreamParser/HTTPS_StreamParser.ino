@@ -6,7 +6,7 @@
  *
  */
  
-#define USE_HTTPS_MODE 1 // on the ESP8266 this is dangerous... https://www.esp8266.com/viewtopic.php?p=69937
+//#define USE_HTTPS_MODE 1 // on the ESP8266 this is dangerous... https://www.esp8266.com/viewtopic.php?p=69937
 					     // and https://esp8266life.wordpress.com/2019/01/13/memory-memory-always-memory/
 
 #include <ESP8266WiFi.h>
@@ -55,7 +55,7 @@ void setup()
     
     Serial.println("Starting........."); printHeapFreeToSerial();
     
-    WiFi.begin("XXXXX", "XXXXX");
+    WiFi.begin("<SSID>", "<PASSWORD>");
     
     Serial.print("Connecting");
     while (WiFi.status() != WL_CONNECTED)
@@ -92,9 +92,10 @@ void setup()
 
     // Lets being
    #ifdef USE_HTTPS_MODE
-    http.begin(*client, "https://samples.openweathermap.org/data/2.5/forecast?q=London,us&appid=439d4b804bc8187953eb36d2a8c26a02");
+    // http.begin(*client, "https://samples.openweathermap.org/data/2.5/forecast?q=London,us&appid=439d4b804bc8187953eb36d2a8c26a02");
+    http.begin(*client, "https://ct-update.mooo.com/iot/bigjson.php");
    #else
-    http.begin(client, "http://xxxxx");
+    http.begin(client, "http://ct-update.mooo.com/iot/bigjson.php");
    #endif
     
     
