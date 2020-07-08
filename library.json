@@ -18,9 +18,9 @@
     "examples/HTTPS_StreamParser/*.cpp",
     "examples/HTTPS_StreamParser/*.h",
 	
-    "examples/HTTPS_StreamParser_Map/*.ino",
-    "examples/HTTPS_StreamParser_Map/*.cpp",
-    "examples/HTTPS_StreamParser_Map/*.h",	
+    "examples/HTTPS_StreamParser_Weather/*.ino",
+    "examples/HTTPS_StreamParser_Weather/*.cpp",
+    "examples/HTTPS_StreamParser_Weather/*.h",	
 	
     "examples/SimpleParser/*.ino",
     "examples/SimpleParser/*.cpp",
