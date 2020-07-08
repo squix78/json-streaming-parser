@@ -6,28 +6,21 @@
 /*
 	// Parse a huge JSON test file with data like the following
 	// Only do something when we find 'John'.
-	{
-	  "ip_address": "190.229.245.27",
-	  "id": 108039,
-	  "first_name": "VXZOi9JdwA",
-	  "last_name": "VXZOi9JdwA",
-	  "email": "kAMdW5CZmN@gmailz.com",
-	  "gender": "Male"
+	[{
+	  "id": 0,	
+	  "first_name": "SvprRY8xno",
+	  "last_name": "SvprRY8xno",
+	  "email": "EkMZbRghxH@gmailz.com",
+	  "gender": "Male",
+	  "ip_address": "19.20.93.148" 
 	},{
-	  "ip_address": "6.14.189.154",
-	  "id": 108040,
-	  "first_name": "eBsxmH9oNR",
-	  "last_name": "eBsxmH9oNR",
-	  "email": "9NI2qwoF8D@gmailz.com",
-	  "gender": "Male"
-	},{
-	  "ip_address": "88.156.14.189",
-	  "id": 108041,
-	  "first_name": "j02WbfrVBn",
-	  "last_name": "j02WbfrVBn",
-	  "email": "aRbGF2VN9Q@gmailz.com",
-	  "gender": "Male"
-	}
+	  "id": 1,	
+	  "first_name": "E0fugv6Vk4",
+	  "last_name": "E0fugv6Vk4",
+	  "email": "QWtUYuGod4@gmailz.com",
+	  "gender": "Male",
+	  "ip_address": "196.240.44.163" 
+	}...
 */
 
 // Function Implementation
