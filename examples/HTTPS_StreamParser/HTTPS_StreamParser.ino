@@ -3,7 +3,9 @@
  * and takes the data directly from the WiFi receive buffers and begins parsing.
  *
  * Note: This sketch does nothing more than print to Serial how it views the received JSON.
- *
+ *       This sketch connects to a webserver and starts streaming a LARGE json file... so the speed
+ *       of parsing is dependant on your Arduino device CPU and the speed of your WiFi internet.
+ *       The size of the JSON file could be unlimited - but the time taken to parse will also increase.
  */
  
 //#define USE_HTTPS_MODE 1 // on the ESP8266 this is dangerous... https://www.esp8266.com/viewtopic.php?p=69937
@@ -21,7 +23,7 @@
 #include <ESP8266HTTPClient.h>  
 
 
-//#include <JsonStreamingParser2.h>         // Note: This isn't used!
+//#include <JsonStreamingParser2.h>         // Note: This isn't used as we parse / stream directly from WiFi buffers!
 #include "ExampleHandler.h"                 // Custom JSON document handler
 #include <ArduinoStreamParser.h>            // <==== THE JSON Streaming Parser - Arduino STREAM WRAPPER
 
@@ -81,10 +83,11 @@ void setup()
       printHeapFreeToSerial(); 
   #endif
 
-    // Open Weather Map JSON Streaming Parser
+    // 1. Create Parser and JSON Stream Handler
     ArudinoStreamParser parser;
     ExampleHandler custom_handler;
     
+    // 2. Attach JSON Stream Handler
     parser.setHandler(&custom_handler); // Link to customer listener (parser to be honest)
     
     Serial.println("Setup JSON Streaming Parser.");
@@ -119,7 +122,8 @@ void setup()
           Serial.println("Parsing JSON...");
           printHeapFreeToSerial();
 
-          http.writeToStream(&parser); // Shoot it straight to the parser
+          // 3. Start parsing directly from http stream!
+          http.writeToStream(&parser); 
       
           Serial.println("Completed Parsing.");
           printHeapFreeToSerial();   
