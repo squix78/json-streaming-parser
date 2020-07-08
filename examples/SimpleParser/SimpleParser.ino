@@ -1,6 +1,7 @@
 /* 
  * Example of the traditional JSON Stream Parser done character by character with
- * the use of a character array or Arduino string.
+ * the use of a character array or Arduino string which consumes memory proportional
+ * to the length of the string.
  */ 
 #include "JsonStreamingParser2.h" 
 #include "JsonHandler.h"
