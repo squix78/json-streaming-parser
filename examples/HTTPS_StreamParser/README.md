@@ -1,4 +1,4 @@
-# HTTPS Stream Parser
+# HTTP/HTTPS Stream Parser
 
 An enhanced example whereby we connect to a HTTPS JSON feed (web server) directly and use the Arduino HTTPClient class to send the received data directly to the parser as a 'Stream' interface.
 
