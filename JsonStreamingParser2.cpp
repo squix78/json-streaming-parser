@@ -426,7 +426,7 @@ void JsonStreamingParser::endNumber() {
       myHandler->value(path, elementValue.with(floatValue));
     } else {
       long intValue;
-      sscanf(buffer, "%d", &intValue);
+      sscanf(buffer, "%ld", &intValue);
       myHandler->value(path, elementValue.with(intValue));
     }
     bufferPos = 0;

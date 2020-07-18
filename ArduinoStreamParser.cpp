@@ -31,6 +31,8 @@ size_t ArudinoStreamParser::write(uint8_t data) {
 
 	// Catch the write of the byte/char from the arduino library.
 	parse(data);
+	
+	return 1;
 }
 
 int ArudinoStreamParser::available() {

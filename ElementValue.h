@@ -85,7 +85,7 @@ struct ElementValue {
     
     char* toString(char* buffer) {
       if(isInt()) {
-        sprintf(buffer, "%d", getInt());
+        sprintf(buffer, "%ld", getInt()); // long int
       } else if(isFloat()) {
         sprintf(buffer, "%f", getFloat());
       } else if(isString()) {
