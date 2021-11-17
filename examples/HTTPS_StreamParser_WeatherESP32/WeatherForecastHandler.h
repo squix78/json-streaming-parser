@@ -90,11 +90,9 @@ class WeatherForecastHandler: public JsonHandler
        */
       void value(ElementPath path, ElementValue value) 
       {
-            
+          // For debug only.
           memset(fullPath, 0 , sizeof(fullPath));          
           path.toString(fullPath);
-          
-          const char* currentKey = path.getKey();
           
           /*
           // Uncomment this to see the paths.
@@ -116,49 +114,28 @@ class WeatherForecastHandler: public JsonHandler
             it->second = value.getFloat();
           }
           
-          // Object entry?
-          if(currentKey[0] != '\0') {
+
               
-            // Tradition State-Machine based parser
-            if(strcmp(currentKey, "dt") == 0) {
-              forecast.datetime = (time_t) value.getInt(); 
-            }
-            else if (strcmp(currentKey, "humidity") == 0) {
-              forecast.humidity = value.getInt();
-            }
-            else if (strcmp(currentKey, "temp") == 0) {
-              forecast.temp = value.getInt();
-            }    
-            else if (strcmp(currentKey, "main") == 0) {
-              strncpy(forecast.summary, value.getString(), sizeof(forecast.summary));
-            } 
-            else if (strcmp(currentKey, "icon") == 0) { // We're at the end from our perspective.
-              
-              myForecasts.push_front (forecast);
-              //Serial.println("Inserted forecast...");
-       
-            } // end state machine logic
-                          
-          } 
-          // Array item.
-          /*
-          else {
-            int currentIndex = path.getIndex();
-            if(currentIndex == 0) {
-              //TODO: use the value.
-            } else if(currentIndex < 5) {
-              //TODO: use the value.
-            }
-            // else ... 
-          }
-          */
-          
+          // Tradition State-Machine based parser
+          std::string currentKey = std::string(path.getKey());
+                    
+          if ( !currentKey.compare("dt") ) 
+            forecast.datetime = (time_t) value.getInt(); 
+
+          if ( !currentKey.compare("humidity") )           
+            forecast.humidity = value.getInt();
+
+          if ( !currentKey.compare("temp") )    
+            forecast.temp = value.getInt();
+
+          if ( !currentKey.compare("main") )       
+            strncpy(forecast.summary, value.getString(), sizeof(forecast.summary)); // use of C strings... :-(
+
+          if ( !currentKey.compare("icon") )  
+            myForecasts.push_front (forecast);
+ 
       } // end value
 
-      // Reverse the list so it's most recent to most far away forecast
-      void endDocument() { 
-        myForecasts.reverse(); 
-      }	  
 
       // Functions we don't care about in this example
       void startDocument() { }      
@@ -167,5 +144,9 @@ class WeatherForecastHandler: public JsonHandler
       void startArray(ElementPath path) {}
       void endArray(ElementPath path) {}
       void whitespace(char c) {}
+      
+      void endDocument() { 
+        myForecasts.reverse(); // Reverse the list so it's most recent to most far away forecast
+      }          
 
 };

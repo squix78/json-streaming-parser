@@ -122,17 +122,7 @@ void loop() {
 
       char weekday_str[12] = { '\0' };
       strcpy(weekday_str, dayStr(forecast_day_of_week));    
-/*
-      char am_or_pm[3];
-      if (isAM(x.datetime) == false)
-      {
-        strcpy(am_or_pm, "PM");
-      }
-      else
-      {
-        strcpy(am_or_pm, "AM");
-      }
-*/      
+	  
       Serial.printf_P("Forecast for %s %d %s @ %d:00: %s and %d degrees.\n", weekday_str, forecast_day_of_month, monthStr(forecast_month), hour(x.datetime), x.summary, x.temp/10);    
       
     }    
