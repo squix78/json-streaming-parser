@@ -2,6 +2,9 @@
 
 Copyright (c) 2015 by Daniel Eichhorn
 
+Contributors:
+    Stefano Chizzolini
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -20,10 +23,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-parser
+
 */
 
-#include "JsonStreamingParser.h"
+#include "JsonStreamingParser2.h"
 
 JsonStreamingParser::JsonStreamingParser() {
     reset();
@@ -35,13 +38,19 @@ void JsonStreamingParser::reset() {
     unicodeEscapeBufferPos = 0;
     unicodeBufferPos = 0;
     characterCounter = 0;
+	stackPos = 0;
 }
 
-void JsonStreamingParser::setListener(JsonListener* listener) {
-  myListener = listener;
+void JsonStreamingParser::setHandler(JsonHandler* handler) {
+  myHandler = handler;
 }
 
 void JsonStreamingParser::parse(char c) {
+	
+#ifdef ARDUINO_ARCH_ESP8266	
+	yield(); // reduce crashes
+#endif	
+	
     //System.out.print(c);
     // valid whitespace characters in JSON (from RFC4627 for JSON) include:
     // space, horizontal tab, line feed or new line, and carriage return.
@@ -69,6 +78,7 @@ void JsonStreamingParser::parse(char c) {
       if (c == ']') {
         endArray();
       } else {
+        path.getCurrent()->step();
         startValue(c);
       }
       break;
@@ -180,7 +190,7 @@ void JsonStreamingParser::parse(char c) {
       }
       break;
     case STATE_START_DOCUMENT:
-      myListener->startDocument();
+      myHandler->startDocument();
       if (c == '[') {
         startArray();
       } else if (c == '{') {
@@ -202,7 +212,7 @@ void JsonStreamingParser::parse(char c) {
   }
 
 void JsonStreamingParser::increaseBufferPointer() {
-  bufferPos = min(bufferPos + 1, BUFFER_MAX_LENGTH - 1);
+  bufferPos = min(bufferPos + 1, JSON_PARSER_BUFFER_MAX_LENGTH - 1);
 }
 
 void JsonStreamingParser::endString() {
@@ -210,11 +220,11 @@ void JsonStreamingParser::endString() {
     stackPos--;
     if (popped == STACK_KEY) {
       buffer[bufferPos] = '\0';
-      myListener->key(String(buffer));
+      path.getCurrent()->set(buffer);
       state = STATE_END_KEY;
     } else if (popped == STACK_STRING) {
       buffer[bufferPos] = '\0';
-      myListener->value(String(buffer));
+      myHandler->value(path, elementValue.with(buffer));
       state = STATE_AFTER_VALUE;
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
@@ -223,6 +233,11 @@ void JsonStreamingParser::endString() {
     bufferPos = 0;
   }
 void JsonStreamingParser::startValue(char c) {
+	
+#ifdef ARDUINO_ARCH_ESP8266	
+	yield();
+#endif
+	
     if (c == '[') {
       startArray();
     } else if (c == '{') {
@@ -257,11 +272,12 @@ boolean JsonStreamingParser::isDigit(char c) {
 void JsonStreamingParser::endArray() {
     int popped = stack[stackPos - 1];
     stackPos--;
+    path.pop();
     if (popped != STACK_ARRAY) {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Unexpected end of array encountered.");
     }
-    myListener->endArray();
+    myHandler->endArray(path);
     state = STATE_AFTER_VALUE;
     if (stackPos == 0) {
       endDocument();
@@ -277,11 +293,12 @@ void JsonStreamingParser::startKey() {
 void JsonStreamingParser::endObject() {
     int popped = stack[stackPos];
     stackPos--;
+    path.pop();
     if (popped != STACK_OBJECT) {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Unexpected end of object encountered.");
     }
-    myListener->endObject();
+    myHandler->endObject(path);
     state = STATE_AFTER_VALUE;
     if (stackPos == 0) {
       endDocument();
@@ -366,7 +383,7 @@ boolean JsonStreamingParser::isHexCharacter(char c) {
 
 int JsonStreamingParser::getHexArrayAsDecimal(char hexArray[], int length) {
     int result = 0;
-    for (int i = 0; i < length; i++) {
+    for (int i = length; i >= 0; i--) {
       char current = hexArray[length - i - 1];
       int value = 0;
       if (current >= 'a' && current <= 'f') {
@@ -376,7 +393,7 @@ int JsonStreamingParser::getHexArrayAsDecimal(char hexArray[], int length) {
       } else if (current >= '0' && current <= '9') {
         value = current - '0';
       }
-      result += value * 16^i;
+      result = (result << 4) | value;
     }
     return result;
   }
@@ -404,15 +421,15 @@ void JsonStreamingParser::endUnicodeSurrogateInterstitial() {
 
 void JsonStreamingParser::endNumber() {
     buffer[bufferPos] = '\0';
-    String value = String(buffer);
-    //float result = 0.0;
-    //if (doesCharArrayContain(buffer, bufferPos, '.')) {
-    //  result = value.toFloat();
-    //} else {
-      // needed special treatment in php, maybe not in Java and c
-    //  result = value.toFloat();
-    //}
-    myListener->value(value.c_str());
+    if (strchr(buffer, '.') != NULL) {
+      float floatValue;
+      sscanf(buffer, "%f", &floatValue);
+      myHandler->value(path, elementValue.with(floatValue));
+    } else {
+      long intValue;
+      sscanf(buffer, "%ld", &intValue);
+      myHandler->value(path, elementValue.with(intValue));
+    }
     bufferPos = 0;
     state = STATE_AFTER_VALUE;
   }
@@ -427,15 +444,18 @@ int JsonStreamingParser::convertDecimalBufferToInt(char myArray[], int length) {
   }
 
 void JsonStreamingParser::endDocument() {
-    myListener->endDocument();
-    state = STATE_DONE;
+    myHandler->endDocument();
+    state = STATE_START_DOCUMENT;
+    bufferPos = 0;
+    unicodeEscapeBufferPos = 0;
+    unicodeBufferPos = 0;
+    characterCounter = 0;
   }
 
 void JsonStreamingParser::endTrue() {
     buffer[bufferPos] = '\0';
-    String value = String(buffer);
-    if (value.equals("true")) {
-      myListener->value("true");
+    if(strcmp(buffer, "true") == 0) {
+      myHandler->value(path, elementValue.with(true));
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Expected 'true'. Got: ".$true);
@@ -446,9 +466,8 @@ void JsonStreamingParser::endTrue() {
 
 void JsonStreamingParser::endFalse() {
     buffer[bufferPos] = '\0';
-    String value = String(buffer);
-    if (value.equals("false")) {
-      myListener->value("false");
+    if(strcmp(buffer, "false") == 0) {
+      myHandler->value(path, elementValue.with(false));
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Expected 'true'. Got: ".$true);
@@ -459,9 +478,8 @@ void JsonStreamingParser::endFalse() {
 
 void JsonStreamingParser::endNull() {
     buffer[bufferPos] = '\0';
-    String value = String(buffer);
-    if (value.equals("null")) {
-      myListener->value("null");
+    if(strcmp(buffer, "null") == 0) {
+      myHandler->value(path, elementValue.with());
     } else {
       // throw new ParsingError($this->_line_number, $this->_char_number,
       // "Expected 'true'. Got: ".$true);
@@ -471,16 +489,18 @@ void JsonStreamingParser::endNull() {
   }
 
 void JsonStreamingParser::startArray() {
-    myListener->startArray();
+    myHandler->startArray(path);
     state = STATE_IN_ARRAY;
     stack[stackPos] = STACK_ARRAY;
+    path.push(); 
     stackPos++;
   }
 
 void JsonStreamingParser::startObject() {
-    myListener->startObject();
+    myHandler->startObject(path);
     state = STATE_IN_OBJECT;
     stack[stackPos] = STACK_OBJECT;
+    path.push(); 
     stackPos++;
   }
 
@@ -497,20 +517,19 @@ void JsonStreamingParser::startNumber(char c) {
   }
 
 void JsonStreamingParser::endUnicodeCharacter(int codepoint) {
-    buffer[bufferPos] = convertCodepointToCharacter(codepoint);
+    if (codepoint < 0x80){
+      buffer[bufferPos] = (char) (codepoint);
+    } else if (codepoint <= 0x800){
+      buffer[bufferPos] = (char) ((codepoint >> 6) | 0b11000000);
+      increaseBufferPointer();
+      buffer[bufferPos] = (char) ((codepoint & 0b00111111) | 0b10000000);
+    } else if (codepoint == 0x2019){
+      buffer[bufferPos] = '\''; // \u2019 ’
+    } else {
+      buffer[bufferPos] = ' ';
+    }
     increaseBufferPointer();
     unicodeBufferPos = 0;
     unicodeHighSurrogate = -1;
     state = STATE_IN_STRING;
-  }
-
-char JsonStreamingParser::convertCodepointToCharacter(int num) {
-    if (num <= 0x7F)
-      return (char) (num);
-    // if(num<=0x7FF) return (char)((num>>6)+192) + (char)((num&63)+128);
-    // if(num<=0xFFFF) return
-    // chr((num>>12)+224).chr(((num>>6)&63)+128).chr((num&63)+128);
-    // if(num<=0x1FFFFF) return
-    // chr((num>>18)+240).chr(((num>>12)&63)+128).chr(((num>>6)&63)+128).chr((num&63)+128);
-    return ' ';
   }

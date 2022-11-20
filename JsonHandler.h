@@ -2,6 +2,9 @@
 
 Copyright (c) 2015 by Daniel Eichhorn
 
+Contributors:
+    Stefano Chizzolini
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -26,29 +29,27 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 #pragma once
 
 #include <Arduino.h>
+#include "ElementPath.h"
+#include "ElementValue.h"
 
-class JsonListener {
+class JsonHandler {
   private:
 
   public:
-    
-    virtual void whitespace(char c) = 0;
-  
-    virtual void startDocument() = 0;
 
-    virtual void key(String key) = 0;
-
-    virtual void value(String value) = 0;
-
-    virtual void endArray() = 0;
-
-    virtual void endObject() = 0;
+    virtual void endArray(ElementPath path) = 0;
 
     virtual void endDocument() = 0;
 
-    virtual void startArray() = 0;
+    virtual void endObject(ElementPath path) = 0;
 
-    virtual void startObject() = 0;
- 
+    virtual void startArray(ElementPath path) = 0;
+  
+    virtual void startDocument() = 0;
+
+    virtual void startObject(ElementPath path) = 0;
+
+    virtual void value(ElementPath path, ElementValue value) = 0;
+  
+    virtual void whitespace(char c) = 0;
 };
-

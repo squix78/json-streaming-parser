@@ -1,21 +1,30 @@
-{
-  "name": "JsonStreamingParser",
-  "keywords": "json, streaming",
-  "description": "A very memory efficient library to parse (large) JSON objects on embedded devices",
+ {
+  "name": "Json Streaming Parser 2",
+  "keywords": "json, streaming, https, http, wifi",
+  "description": "A memory efficient library to parse (large) JSON objects from HTTP or HTTPS on embedded devices. Implements a number of improvements over the original json-streaming-parser library but is not backwards compatible. Library includes useful example sketches.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/squix78/json-streaming-parser.git"
+    "url": "https://github.com/mrfaptastic/json-streaming-parser2.git"
   },
   "authors": {
-    "name": "Daniel Eichhorn",
-    "url": "http://blog.squix.ch"
+    "name": "Faptastic",
+    "url": "https://github.com/mrfaptastic/"
   },
-  "version": "1.0.5",
+  "version": "2.0.3",
   "frameworks": "arduino",
   "platforms": "*",
   "examples": [
-    "examples/JsonStreamingParser/*.ino",
-    "examples/JsonStreamingParser/*.cpp",
-    "examples/JsonStreamingParser/*.h"
+    "examples/HTTPS_StreamParser/*.ino",
+    "examples/HTTPS_StreamParser/*.cpp",
+    "examples/HTTPS_StreamParser/*.h",
+	
+    "examples/HTTPS_StreamParser_Weather/*.ino",
+    "examples/HTTPS_StreamParser_Weather/*.cpp",
+    "examples/HTTPS_StreamParser_Weather/*.h",	
+	
+    "examples/SimpleParser/*.ino",
+    "examples/SimpleParser/*.cpp",
+    "examples/SimpleParser/*.h"	
+	
   ]
 }

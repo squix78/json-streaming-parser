@@ -2,6 +2,9 @@
 
 Copyright (c) 2015 by Daniel Eichhorn
 
+Contributors:
+    Stefano Chizzolini
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -26,7 +29,7 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 #pragma once
 
 #include <Arduino.h>
-#include "JsonListener.h"
+#include "JsonHandler.h"
 
 #define STATE_START_DOCUMENT     0
 #define STATE_DONE               -1
@@ -49,20 +52,26 @@ See more at http://blog.squix.ch and https://github.com/squix78/json-streaming-p
 #define STACK_KEY                2
 #define STACK_STRING             3
 
-#define BUFFER_MAX_LENGTH  512
+#ifndef JSON_PARSER_BUFFER_MAX_LENGTH
+#define JSON_PARSER_BUFFER_MAX_LENGTH  256
+#endif
 
 class JsonStreamingParser {
   private:
 
-
     int state;
     int stack[20];
     int stackPos = 0;
-    JsonListener* myListener;
+    
+    ElementValue elementValue;
+    ElementPath path;
+    
+    JsonHandler* myHandler;
 
     boolean doEmitWhitespace = false;
+	
     // fixed length buffer array to prepare for c code
-    char buffer[BUFFER_MAX_LENGTH];
+    char buffer[JSON_PARSER_BUFFER_MAX_LENGTH];
     int bufferPos = 0;
 
     char unicodeEscapeBuffer[10];
@@ -125,11 +134,9 @@ class JsonStreamingParser {
 
     void endObject();
 
-
-
   public:
     JsonStreamingParser();
     void parse(char c);
-    void setListener(JsonListener* listener);
+    void setHandler(JsonHandler* handler);
     void reset();
 };
